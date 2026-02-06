@@ -33,7 +33,7 @@ export const sendFeedbackEmail = async ({
     recipients: [
       {
         name: "Udpgrants",
-        email: "michealpedelton111@gmail.com", // TODO: Replace with "jessicamatt91@gmail.com" once created
+        email: "michealpedelton111@gmail.com", // TODO: Replace with new admin email once provided
       },
     ],
     responseAddress: {
