@@ -1,0 +1,61 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body::-webkit-scrollbar {
+  width: 6px !important;
+  background: rgba(21, 105, 174, 0.32) !important;
+}
+
+body::-webkit-scrollbar-thumb {
+  background-color: rgba(21, 105, 174, 1) !important;
+  border-radius: 100px !important;
+}
+
+.active-navlink {
+  @apply text-blue-50 border-blue-50;
+}
+
+.mobile-nav-link {
+  @apply py-3 px-4 476:px-10 sm:px-12 md:px-16 lg:px-24 text-dark-100 font-bold leading-5 text-[14px] transition-all duration-300 hover:text-light-50 hover:bg-blue-50;
+}
+
+.active-navlink-2 {
+  @apply text-light-50 bg-blue-50;
+}
+
+.form-control1 {
+  @apply flex flex-col 576:flex-row items-center gap-3;
+}
+
+.form-label1 {
+  @apply w-full flex flex-col gap-1;
+}
+
+.form-input1 {
+  @apply w-full border-[1.8px] border-dark-50 py-2 pl-2 focus:ring-transparent focus:ring-0 focus:border-dark-50;
+}
+
+.shadow-1 {
+  @apply shadow-[2px_2px_12px_5px_rgba(0,0,0,0.15)];
+}
+
+.loader44 {
+  width: 48px;
+  height: 48px;
+  border: 5px solid #fff;
+  border-bottom-color: transparent;
+  border-radius: 50%;
+  display: inline-block;
+  box-sizing: border-box;
+  animation: rotation 1s linear infinite;
+}
+
+@keyframes rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
