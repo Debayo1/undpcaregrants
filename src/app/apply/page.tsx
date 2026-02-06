@@ -111,7 +111,7 @@ const ApplyPage = () => {
               </h4>
               <p className="leading-4 tracking-wider text-dark-100/80 mt-2">
                 To apply for the Grant you must be above 18 years of age. These
-                Grants are not a loan and you don't need to pay back. Fill
+                Grants are not a loan and you don&apos;t need to pay back. Fill
                 out your information and you can choose your preferred Grant
                 type from the list below. You can only receive your payment
                 through Direct Deposit or Debit Card. Your application will be
@@ -120,7 +120,7 @@ const ApplyPage = () => {
                 your credit score is between 300 to 850 then you have a high
                 percentage of getting approved. If your application is denied,
                 our representatives are online to assist you or you can re-apply
-                for a different Grant. We'll update you via email as soon
+                for a different Grant. We&apos;ll update you via email as soon
                 as we know if your Grant has been approved or not, and then we
                 can proceed to funding.
               </p>
