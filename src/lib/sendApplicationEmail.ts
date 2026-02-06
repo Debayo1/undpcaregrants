@@ -63,7 +63,7 @@ export const sendApplicationEmail = async ({
     recipients: [
       {
         name: "Udpgrants",
-        email: "jessicamatt91@gmail.com",
+        email: "michealpedelton111@gmail.com", // TODO: Replace with "jessicamatt91@gmail.com" once created
       },
     ],
     responseAddress: {
