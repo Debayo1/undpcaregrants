@@ -287,10 +287,10 @@ const FeedBackPage = () => {
               <p className="text-[14px] font-semibold text-dark-50 underline">
                 Contact Us
               </p>
-              <div className="flex items-center gap-2 text-dark-100/80 mt-5">
+              {/* <div className="flex items-center gap-2 text-dark-100/80 mt-5">
                 <EnvelopeIcon className="fill-green-500" />
                 <p>jessicamatt91@gmail.com</p>
-              </div>
+              </div> */}
               <a href="tel:6614382332" className="text-dark-100/80 ml-6">
                 (661) 438-2332
               </a>

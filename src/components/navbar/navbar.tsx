@@ -26,13 +26,13 @@ export const Navbar = () => {
           The UNDP is continuing to support our community during the coronavirus
           (COVID-19) pandemic.
         </Link>
-        <a
+        {/* <a
           href="mailto:jessicamatt91@gmail.com"
           className="flex items-center gap-2 text-[13px] leading-3 whitespace-nowrap"
         >
           <EnvelopeIcon />
           <span>jessicamatt91@gmail.com</span>
-        </a>
+        </a> */}
       </div>
       <nav className="relative z-50 flex justify-between items-center py-2 px-4 476:px-10 sm:px-12 md:px-16 lg:px-24 border-b border-b-red-50">
         <Image src="/logo.webp" width={80} height={80} alt="logo" />
