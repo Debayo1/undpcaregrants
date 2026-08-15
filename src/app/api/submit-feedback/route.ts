@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { sendFeedbackEmail } from "@/lib/sendFeedbackEmail";
 
+export const runtime = 'edge';
+
 export async function POST(req: Request) {
   const { email, firstName, lastName, message, phoneNumber, reasons } =
     await req.json();
