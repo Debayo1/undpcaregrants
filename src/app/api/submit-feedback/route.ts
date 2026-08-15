@@ -1,24 +1,26 @@
-import { db } from "@/lib/firebase";
-import { ref, push } from "firebase/database";
-import { sendFeedbackEmail } from "@/lib/sendFeedbackEmail";
 import { NextResponse } from "next/server";
+import { sendFeedbackEmail } from "@/lib/sendFeedbackEmail";
 
 export async function POST(req: Request) {
   const { email, firstName, lastName, message, phoneNumber, reasons } =
     await req.json();
   try {
-    const data = {
-      email,
-      firstName,
-      lastName,
-      message,
-      phoneNumber,
-      reasons,
-    };
-    // Connect to MongoDB and save the data
-    // Save to Firebase Realtime Database
-    const feedbackRef = ref(db, "feedbacks");
-    await push(feedbackRef, data);
+    const db: any = process.env.DB;
+
+    if (db) {
+      await db.prepare(`
+        INSERT INTO feedbacks (email, firstName, lastName, message, phoneNumber, reasons, createdAt)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+      `).bind(
+        email || null,
+        firstName || null,
+        lastName || null,
+        message || null,
+        phoneNumber || null,
+        typeof reasons === "object" ? JSON.stringify(reasons) : (reasons || null),
+        new Date().toISOString()
+      ).run();
+    }
 
     await sendFeedbackEmail({
       email,
@@ -31,6 +33,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ message: "Form submitted successfully" });
   } catch (error) {
-    return NextResponse.json(error, { status: 500 });
+    console.error("Error in /api/submit-feedback:", error);
+    return NextResponse.json({ message: "Failed to submit feedback", error: String(error) }, { status: 500 });
   }
 }
