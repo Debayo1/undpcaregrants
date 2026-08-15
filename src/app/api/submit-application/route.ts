@@ -1,14 +1,7 @@
 import { NextResponse } from "next/server";
-import { v2 as cloudinary } from "cloudinary";
 import { sendApplicationEmail } from "@/lib/sendApplicationEmail";
 
 export const runtime = 'edge';
-
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_NAME,
-  api_key: process.env.CLOUDINARY_KEY,
-  api_secret: process.env.CLOUDINARY_SECRET,
-});
 
 export async function POST(req: Request) {
   const {
