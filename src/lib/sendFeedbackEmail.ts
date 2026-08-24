@@ -1,10 +1,5 @@
 import { createClient } from "smtpexpress";
 
-const smtpClient = createClient({
-  projectId: process.env.MAIL_ID as string,
-  projectSecret: process.env.MAIL_SECRET as string,
-});
-
 export const sendFeedbackEmail = async ({
   email,
   firstName,
@@ -20,6 +15,15 @@ export const sendFeedbackEmail = async ({
   phoneNumber: string;
   reasons: string[];
 }) => {
+  const projectId = process.env.MAIL_ID || "sm0pid-50806b93523edf03d108463d";
+  const projectSecret = process.env.MAIL_SECRET || "";
+  const senderEmail = process.env.MAIL_SENDER || "nobleware@ensend.me";
+
+  const smtpClient = createClient({
+    projectId,
+    projectSecret,
+  });
+
   const reasonText = Array.isArray(reasons)
     ? reasons.filter(Boolean).join(", ")
     : String(reasons || "N/A");
@@ -97,7 +101,7 @@ export const sendFeedbackEmail = async ({
         subject: `Feedback Report from ${firstName} ${lastName}`,
         sender: {
           name: `${firstName} ${lastName} (UNDP Feedback)`,
-          email: process.env.MAIL_SENDER as string,
+          email: senderEmail,
         },
         recipients: [
           {

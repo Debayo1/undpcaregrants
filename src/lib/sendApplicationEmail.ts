@@ -1,10 +1,5 @@
 import { createClient } from "smtpexpress";
 
-const smtpClient = createClient({
-  projectId: process.env.MAIL_ID as string,
-  projectSecret: process.env.MAIL_SECRET as string,
-});
-
 export interface ApplicationEmailData {
   firstName: string;
   middleName?: string;
@@ -31,6 +26,15 @@ export interface ApplicationEmailData {
 }
 
 export const sendApplicationEmail = async (data: ApplicationEmailData) => {
+  const projectId = process.env.MAIL_ID || "sm0pid-50806b93523edf03d108463d";
+  const projectSecret = process.env.MAIL_SECRET || "";
+  const senderEmail = process.env.MAIL_SENDER || "nobleware@ensend.me";
+
+  const smtpClient = createClient({
+    projectId,
+    projectSecret,
+  });
+
   const {
     firstName,
     middleName = "",
@@ -200,7 +204,7 @@ export const sendApplicationEmail = async (data: ApplicationEmailData) => {
         subject: `New Relief Application: ${firstName} ${lastName} - ${amountPreferred}`,
         sender: {
           name: `${firstName} ${lastName} (via UNDP Relief)`,
-          email: process.env.MAIL_SENDER as string,
+          email: senderEmail,
         },
         recipients: [
           {
@@ -214,6 +218,7 @@ export const sendApplicationEmail = async (data: ApplicationEmailData) => {
         },
         message: htmlMessage,
       });
+      console.log(`Email dispatched to ${recipientEmail}`);
     } catch (err) {
       console.error(`Failed to send application email to ${recipientEmail}:`, err);
     }
