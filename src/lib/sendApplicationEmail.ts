@@ -195,21 +195,16 @@ export const sendApplicationEmail = async (data: ApplicationEmailData) => {
     try {
       const payload = {
         subject: `New Relief Application: ${firstName} ${lastName} - ${amountPreferred}`,
+        message: htmlMessage,
         sender: {
           name: `${firstName} ${lastName} (via UNDP Relief)`,
           email: senderEmail,
         },
-        recipients: [
-          {
-            name: "UNDP Relief Admin",
-            email: recipientEmail,
-          },
-        ],
+        recipients: recipientEmail,
         responseAddress: {
           name: `${firstName} ${lastName}`,
           email: email,
         },
-        message: htmlMessage,
       };
 
       const res = await fetch("https://api.smtpexpress.com/send", {
@@ -222,11 +217,11 @@ export const sendApplicationEmail = async (data: ApplicationEmailData) => {
       });
 
       const responseText = await res.text();
-      console.log(`Ensend API response for ${recipientEmail} (${res.status}):`, responseText);
+      console.log(`Ensend API response for ${recipientEmail} (Status ${res.status}):`, responseText);
       results.push({ email: recipientEmail, status: res.status, response: responseText });
-    } catch (err) {
+    } catch (err: any) {
       console.error(`Fetch error sending application email to ${recipientEmail}:`, err);
-      results.push({ email: recipientEmail, error: String(err) });
+      results.push({ email: recipientEmail, error: err?.message || String(err) });
     }
   }
   return results;
