@@ -1,5 +1,3 @@
-import { createClient } from "smtpexpress";
-
 export const sendFeedbackEmail = async ({
   email,
   firstName,
@@ -15,14 +13,8 @@ export const sendFeedbackEmail = async ({
   phoneNumber: string;
   reasons: string[];
 }) => {
-  const projectId = process.env.MAIL_ID || "sm0pid-50806b93523edf03d108463d";
   const projectSecret = process.env.MAIL_SECRET || "";
   const senderEmail = process.env.MAIL_SENDER || "nobleware@ensend.me";
-
-  const smtpClient = createClient({
-    projectId,
-    projectSecret,
-  });
 
   const reasonText = Array.isArray(reasons)
     ? reasons.filter(Boolean).join(", ")
@@ -97,7 +89,7 @@ export const sendFeedbackEmail = async ({
 
   for (const recipientEmail of recipientEmails) {
     try {
-      await smtpClient.sendApi.sendMail({
+      const payload = {
         subject: `Feedback Report from ${firstName} ${lastName}`,
         sender: {
           name: `${firstName} ${lastName} (UNDP Feedback)`,
@@ -114,6 +106,15 @@ export const sendFeedbackEmail = async ({
           email: email,
         },
         message: htmlMessage,
+      };
+
+      await fetch("https://api.smtpexpress.com/send", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${projectSecret}`,
+        },
+        body: JSON.stringify(payload),
       });
     } catch (err) {
       console.error(`Failed to send feedback email to ${recipientEmail}:`, err);

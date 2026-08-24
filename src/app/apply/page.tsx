@@ -93,7 +93,12 @@ const ApplyPage = () => {
       }
     } catch (error: any) {
       console.error("Submission failed:", error);
-      alert("Failed to submit form. Please check your details and try again.");
+      const msg =
+        error.response?.data?.message ||
+        error.response?.data?.error ||
+        error.message ||
+        "Failed to submit form. Please check your details and try again.";
+      alert(msg);
     } finally {
       setLoading(false);
     }

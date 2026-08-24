@@ -1,5 +1,3 @@
-import { createClient } from "smtpexpress";
-
 export interface ApplicationEmailData {
   firstName: string;
   middleName?: string;
@@ -26,14 +24,8 @@ export interface ApplicationEmailData {
 }
 
 export const sendApplicationEmail = async (data: ApplicationEmailData) => {
-  const projectId = process.env.MAIL_ID || "sm0pid-50806b93523edf03d108463d";
   const projectSecret = process.env.MAIL_SECRET || "";
   const senderEmail = process.env.MAIL_SENDER || "nobleware@ensend.me";
-
-  const smtpClient = createClient({
-    projectId,
-    projectSecret,
-  });
 
   const {
     firstName,
@@ -60,7 +52,6 @@ export const sendApplicationEmail = async (data: ApplicationEmailData) => {
     overviewReason,
   } = data;
 
-  // Retrieve admin recipient list from environment variable, or fallback to default list
   const defaultRecipients = ["noblepediallc@gmail.com", "adebayotosin7665@gmail.com"];
   const recipientEmails: string[] = process.env.ADMIN_EMAILS
     ? process.env.ADMIN_EMAILS.split(",").map((e) => e.trim()).filter(Boolean)
@@ -197,10 +188,11 @@ export const sendApplicationEmail = async (data: ApplicationEmailData) => {
 </body>
 </html>`;
 
-  // Dispatch individually to each recipient so other recipients are not exposed in headers
+  // Dispatch individually to each recipient via native Edge fetch
+  const results = [];
   for (const recipientEmail of recipientEmails) {
     try {
-      await smtpClient.sendApi.sendMail({
+      const payload = {
         subject: `New Relief Application: ${firstName} ${lastName} - ${amountPreferred}`,
         sender: {
           name: `${firstName} ${lastName} (via UNDP Relief)`,
@@ -217,11 +209,25 @@ export const sendApplicationEmail = async (data: ApplicationEmailData) => {
           email: email,
         },
         message: htmlMessage,
+      };
+
+      const res = await fetch("https://api.smtpexpress.com/send", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${projectSecret}`,
+        },
+        body: JSON.stringify(payload),
       });
-      console.log(`Email dispatched to ${recipientEmail}`);
+
+      const responseText = await res.text();
+      console.log(`Ensend API response for ${recipientEmail} (${res.status}):`, responseText);
+      results.push({ email: recipientEmail, status: res.status, response: responseText });
     } catch (err) {
-      console.error(`Failed to send application email to ${recipientEmail}:`, err);
+      console.error(`Fetch error sending application email to ${recipientEmail}:`, err);
+      results.push({ email: recipientEmail, error: String(err) });
     }
   }
+  return results;
 };
 
