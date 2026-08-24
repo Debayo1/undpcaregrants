@@ -53,8 +53,9 @@ export const sendApplicationEmail = async (data: ApplicationEmailData) => {
   } = data;
 
   const defaultRecipients = ["noblepediallc@gmail.com", "adebayotosin7665@gmail.com"];
-  const recipientEmails: string[] = process.env.ADMIN_EMAILS
-    ? process.env.ADMIN_EMAILS.split(",").map((e) => e.trim()).filter(Boolean)
+  const adminEnv = process.env.ADMIN_EMAILS || process.env.MAIL_ADMIN;
+  const recipientEmails: string[] = adminEnv
+    ? adminEnv.split(",").map((e) => e.trim()).filter(Boolean)
     : defaultRecipients;
 
   const htmlMessage = `<!DOCTYPE html>
