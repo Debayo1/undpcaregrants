@@ -1,8 +1,6 @@
 "use client";
 import { MainDiv } from "@/components/base-components/main-div";
 import Link from "next/link";
-import { CheckCircleIcon } from "@/icons/check-circle-icon"; // We'll create or use clean SVG
-import Image from "next/image";
 
 export default function ApplicationSuccessPage() {
   return (
