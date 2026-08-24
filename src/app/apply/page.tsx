@@ -10,6 +10,7 @@ import axios from "axios";
 import { CancelIcon } from "@/icons/cancel-icon";
 import { useQuery } from "@tanstack/react-query";
 import { ApplySchema } from "@/schema/apply-schema";
+import { useRouter } from "next/navigation";
 import { LoadModal } from "@/components/base-components/modal";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -34,6 +35,7 @@ const preferredAmountOptions = [
 ];
 
 const ApplyPage = () => {
+  const router = useRouter();
   const [loading, setLoading] = useState<boolean>(false);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [modalMessage, setModalMessage] = useState<string>("");
@@ -86,12 +88,8 @@ const ApplyPage = () => {
         },
       });
       if (res.status === 200) {
-        setModalMessage(
-          res.data.message ||
-            "Your application has been submitted successfully! Our verification team will review the application to determine eligibility. You will receive a text on the status of your application soon. Good luck!"
-        );
-        setShowModal(true);
         reset();
+        router.push("/apply/success");
       }
     } catch (error: any) {
       console.error("Submission failed:", error);
