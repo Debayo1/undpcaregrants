@@ -4,25 +4,9 @@ import { sendFeedbackEmail } from "@/lib/sendFeedbackEmail";
 export const runtime = 'edge';
 
 export async function POST(req: Request) {
-  const { email, firstName, lastName, message, phoneNumber, reasons } =
-    await req.json();
   try {
-    const db: any = process.env.DB;
-
-    if (db) {
-      await db.prepare(`
-        INSERT INTO feedbacks (email, firstName, lastName, message, phoneNumber, reasons, createdAt)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
-      `).bind(
-        email || null,
-        firstName || null,
-        lastName || null,
-        message || null,
-        phoneNumber || null,
-        typeof reasons === "object" ? JSON.stringify(reasons) : (reasons || null),
-        new Date().toISOString()
-      ).run();
-    }
+    const { email, firstName, lastName, message, phoneNumber, reasons } =
+      await req.json();
 
     await sendFeedbackEmail({
       email,
@@ -32,10 +16,15 @@ export async function POST(req: Request) {
       phoneNumber,
       reasons,
     });
+    console.log("Feedback emailed successfully to admin recipients.");
 
-    return NextResponse.json({ message: "Form submitted successfully" });
+    return NextResponse.json({ message: "Feedback submitted successfully! Thank you." });
   } catch (error) {
     console.error("Error in /api/submit-feedback:", error);
-    return NextResponse.json({ message: "Failed to submit feedback", error: String(error) }, { status: 500 });
+    return NextResponse.json(
+      { message: "Failed to submit feedback", error: String(error) },
+      { status: 500 }
+    );
   }
 }
+

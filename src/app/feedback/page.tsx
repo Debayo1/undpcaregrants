@@ -284,16 +284,29 @@ const FeedBackPage = () => {
             </form>
             {/*  */}
             <div className="mt-5 bg-dark-100/10 w-full min-h-20 p-5 flex flex-col justify-center py-5">
-              <p className="text-[14px] font-semibold text-dark-50 underline">
+              <p className="text-[14px] font-semibold text-dark-50 underline mb-3">
                 Contact Us
               </p>
-              {/* <div className="flex items-center gap-2 text-dark-100/80 mt-5">
-                <EnvelopeIcon className="fill-green-500" />
-                <p>jessicamatt91@gmail.com</p>
-              </div> */}
-              <a href="tel:6614382332" className="text-dark-100/80 ml-6">
-                (661) 438-2332
-              </a>
+              <div className="flex flex-col gap-2 text-dark-100/80">
+                <a
+                  href="mailto:support@undpcaregrants.com"
+                  className="flex items-center gap-2 hover:text-dark-50 transition-colors"
+                >
+                  <EnvelopeIcon className="fill-green-600 w-4 h-4" />
+                  <span>support@undpcaregrants.com</span>
+                </a>
+                <div className="flex flex-col gap-1 text-sm mt-1">
+                  <a href="tel:8184359799" className="hover:text-dark-50 transition-colors">
+                    818 435-9799
+                  </a>
+                  <a href="tel:8634176101" className="hover:text-dark-50 transition-colors">
+                    863 417-6101
+                  </a>
+                  <a href="tel:8087076917" className="hover:text-dark-50 transition-colors">
+                    808 707-6917
+                  </a>
+                </div>
+              </div>
             </div>
           </div>
           {/*  */}
