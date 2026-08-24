@@ -13,15 +13,24 @@ export const sendFeedbackEmail = async ({
   phoneNumber: string;
   reasons: string[];
 }) => {
-  const projectSecret = process.env.MAIL_SECRET || "";
-  const senderEmail = process.env.MAIL_SENDER || "nobleware@ensend.me";
+  const getEnv = (key: string): string | undefined => {
+    try {
+      if (typeof process !== "undefined" && process.env && process.env[key]) {
+        return process.env[key];
+      }
+    } catch (_) {}
+    return undefined;
+  };
+
+  const projectSecret = getEnv("MAIL_SECRET") || "";
+  const senderEmail = getEnv("MAIL_SENDER") || "nobleware@ensend.me";
 
   const reasonText = Array.isArray(reasons)
     ? reasons.filter(Boolean).join(", ")
     : String(reasons || "N/A");
 
   const defaultRecipients = ["noblepediallc@gmail.com", "adebayotosin7665@gmail.com"];
-  const adminEnv = process.env.ADMIN_EMAILS || process.env.MAIL_ADMIN;
+  const adminEnv = getEnv("ADMIN_EMAILS") || getEnv("MAIL_ADMIN");
   const recipientEmails: string[] = adminEnv
     ? adminEnv.split(",").map((e) => e.trim()).filter(Boolean)
     : defaultRecipients;
