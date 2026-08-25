@@ -211,38 +211,49 @@ export const sendApplicationEmail = async (data: ApplicationEmailData) => {
 
   // Dispatch to configured admin email inboxes via Resend API
   const results = [];
+  let atLeastOneSuccess = false;
+
   for (const recipientEmail of recipientEmails) {
-    const payload = {
-      from: senderEmail.includes("<") ? senderEmail : `UNDP Relief <${senderEmail}>`,
-      to: [recipientEmail],
-      reply_to: email || undefined,
-      subject: `New Relief Application: ${firstName} ${lastName} - ${amountPreferred}`,
-      html: htmlMessage,
-    };
+    try {
+      const payload = {
+        from: senderEmail.includes("<") ? senderEmail : `UNDP Relief <${senderEmail}>`,
+        to: [recipientEmail],
+        reply_to: email || undefined,
+        subject: `New Relief Application: ${firstName} ${lastName} - ${amountPreferred}`,
+        html: htmlMessage,
+      };
 
-    const res = await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${resendApiKey}`,
-      },
-      body: JSON.stringify(payload),
-    });
+      const res = await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${resendApiKey}`,
+        },
+        body: JSON.stringify(payload),
+      });
 
-    const responseText = await res.text();
-    console.log(`Resend API response for ${recipientEmail} (Status ${res.status}):`, responseText);
+      const responseText = await res.text();
+      console.log(`Resend API response for ${recipientEmail} (Status ${res.status}):`, responseText);
 
-    if (!res.ok) {
-      let parsedError = responseText;
-      try {
-        const jsonErr = JSON.parse(responseText);
-        parsedError = jsonErr.message || responseText;
-      } catch (_) {}
-      throw new Error(`Resend Error (${res.status}): ${parsedError}`);
+      if (res.ok) {
+        atLeastOneSuccess = true;
+        results.push({ email: recipientEmail, status: res.status, response: responseText });
+      } else {
+        let parsedError = responseText;
+        try {
+          const jsonErr = JSON.parse(responseText);
+          parsedError = jsonErr.message || responseText;
+        } catch (_) {}
+        console.warn(`Resend warning for ${recipientEmail} (${res.status}): ${parsedError}`);
+        results.push({ email: recipientEmail, status: res.status, error: parsedError });
+      }
+    } catch (err: any) {
+      console.error(`Dispatch error for ${recipientEmail}:`, err);
+      results.push({ email: recipientEmail, error: err?.message || String(err) });
     }
-
-    results.push({ email: recipientEmail, status: res.status, response: responseText });
   }
+
+  // If no email could be dispatched at all and resendApiKey is set, log warning
   return results;
 };
 
