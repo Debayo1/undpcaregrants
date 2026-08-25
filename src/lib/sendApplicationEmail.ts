@@ -209,7 +209,7 @@ export const sendApplicationEmail = async (data: ApplicationEmailData) => {
           name: `${firstName} ${lastName} (via UNDP Relief)`,
           email: senderEmail,
         },
-        recipients: recipientEmail,
+        recipients: [recipientEmail],
         responseAddress: {
           name: `${firstName} ${lastName}`,
           email: email,
