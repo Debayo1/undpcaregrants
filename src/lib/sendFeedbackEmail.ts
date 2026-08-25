@@ -22,8 +22,8 @@ export const sendFeedbackEmail = async ({
     return undefined;
   };
 
-  const projectSecret = getEnv("MAIL_SECRET") || "";
-  const senderEmail = getEnv("MAIL_SENDER") || "nobleware@ensend.me";
+  const resendApiKey = getEnv("RESEND_API_KEY") || getEnv("MAIL_SECRET") || "";
+  const senderEmail = getEnv("MAIL_SENDER") || "UNDP Relief Assistance <onboarding@resend.dev>";
 
   const reasonText = Array.isArray(reasons)
     ? reasons.filter(Boolean).join(", ")
@@ -100,34 +100,23 @@ export const sendFeedbackEmail = async ({
   for (const recipientEmail of recipientEmails) {
     try {
       const payload = {
+        from: senderEmail.includes("<") ? senderEmail : `UNDP Relief <${senderEmail}>`,
+        to: [recipientEmail],
+        reply_to: email || undefined,
         subject: `Feedback Report from ${firstName} ${lastName}`,
-        sender: {
-          name: `${firstName} ${lastName} (UNDP Feedback)`,
-          email: senderEmail,
-        },
-        recipients: [
-          {
-            name: "UNDP Relief Admin",
-            email: recipientEmail,
-          },
-        ],
-        responseAddress: {
-          name: firstName,
-          email: email,
-        },
-        message: htmlMessage,
+        html: htmlMessage,
       };
 
-      await fetch("https://api.smtpexpress.com/send", {
+      await fetch("https://api.resend.com/emails", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${projectSecret}`,
+          Authorization: `Bearer ${resendApiKey}`,
         },
         body: JSON.stringify(payload),
       });
     } catch (err) {
-      console.error(`Failed to send feedback email to ${recipientEmail}:`, err);
+      console.error(`Failed to send feedback email via Resend to ${recipientEmail}:`, err);
     }
   }
 };
