@@ -89,16 +89,27 @@ const ApplyPage = () => {
         },
         body: JSON.stringify(data),
       });
-      const responseData = await res.json().catch(() => ({}));
-      if (res.ok && responseData.success) {
+
+      const rawText = await res.text();
+      let responseData: any = {};
+      try {
+        responseData = JSON.parse(rawText);
+      } catch (_) {}
+
+      if (res.ok && (responseData.success !== false)) {
         reset();
         router.push("/apply/success");
       } else {
-        alert(responseData.message || responseData.error || "Failed to submit application. Please check details.");
+        const errorDetails =
+          responseData.message ||
+          responseData.error ||
+          rawText ||
+          "Failed to submit application. Please check details.";
+        alert(`Submission Error (${res.status}): ${errorDetails}`);
       }
     } catch (error: any) {
       console.error("Submission failed:", error);
-      alert(error?.message || "Failed to submit application. Please check your internet connection.");
+      alert(`Network Error: ${error?.message || "Please check your internet connection."}`);
     } finally {
       setLoading(false);
     }
