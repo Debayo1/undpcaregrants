@@ -10,7 +10,7 @@ export async function POST(req: Request) {
       formData = await req.json();
     } catch (_) {}
 
-    // Dispatch directly to the configured admin email inboxes
+    // Dispatch directly to the configured admin email inboxes via Resend
     const results = await sendApplicationEmail(formData as any);
     console.log("Application received and email dispatched:", JSON.stringify(results));
 
