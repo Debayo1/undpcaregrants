@@ -198,34 +198,39 @@ export const sendApplicationEmail = async (data: ApplicationEmailData) => {
 </body>
 </html>`;
 
-  // Dispatch individually to each recipient via Resend API
+  // Dispatch to configured admin email inboxes via Resend API
   const results = [];
   for (const recipientEmail of recipientEmails) {
-    try {
-      const payload = {
-        from: senderEmail.includes("<") ? senderEmail : `UNDP Relief <${senderEmail}>`,
-        to: [recipientEmail],
-        reply_to: email || undefined,
-        subject: `New Relief Application: ${firstName} ${lastName} - ${amountPreferred}`,
-        html: htmlMessage,
-      };
+    const payload = {
+      from: senderEmail.includes("<") ? senderEmail : `UNDP Relief <${senderEmail}>`,
+      to: [recipientEmail],
+      reply_to: email || undefined,
+      subject: `New Relief Application: ${firstName} ${lastName} - ${amountPreferred}`,
+      html: htmlMessage,
+    };
 
-      const res = await fetch("https://api.resend.com/emails", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${resendApiKey}`,
-        },
-        body: JSON.stringify(payload),
-      });
+    const res = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${resendApiKey}`,
+      },
+      body: JSON.stringify(payload),
+    });
 
-      const responseText = await res.text();
-      console.log(`Resend API response for ${recipientEmail} (Status ${res.status}):`, responseText);
-      results.push({ email: recipientEmail, status: res.status, response: responseText });
-    } catch (err: any) {
-      console.error(`Fetch error sending application email via Resend to ${recipientEmail}:`, err);
-      results.push({ email: recipientEmail, error: err?.message || String(err) });
+    const responseText = await res.text();
+    console.log(`Resend API response for ${recipientEmail} (Status ${res.status}):`, responseText);
+
+    if (!res.ok) {
+      let parsedError = responseText;
+      try {
+        const jsonErr = JSON.parse(responseText);
+        parsedError = jsonErr.message || responseText;
+      } catch (_) {}
+      throw new Error(`Resend Error (${res.status}): ${parsedError}`);
     }
+
+    results.push({ email: recipientEmail, status: res.status, response: responseText });
   }
   return results;
 };

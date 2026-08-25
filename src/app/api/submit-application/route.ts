@@ -16,16 +16,18 @@ export async function POST(req: Request) {
 
     return NextResponse.json({
       success: true,
-      message: "Application submitted successfully! Our verification team will review the application to determine eligibility. You will receive a text on the status of your application soon. Good luck!",
+      message: "Application submitted successfully!",
       results,
     });
   } catch (error: any) {
     console.error("Error in /api/submit-application:", error);
-    return NextResponse.json({
-      success: true,
-      message: "Application submitted successfully! Our verification team will review the application to determine eligibility. You will receive a text on the status of your application soon. Good luck!",
-      warning: error?.message || String(error),
-    });
+    return NextResponse.json(
+      {
+        success: false,
+        message: error?.message || "Failed to send email application.",
+      },
+      { status: 500 }
+    );
   }
 }
 

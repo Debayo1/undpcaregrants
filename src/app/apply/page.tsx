@@ -90,18 +90,15 @@ const ApplyPage = () => {
         body: JSON.stringify(data),
       });
       const responseData = await res.json().catch(() => ({}));
-      if (res.ok || responseData.success || res.status === 200) {
+      if (res.ok && responseData.success) {
         reset();
         router.push("/apply/success");
       } else {
-        alert(responseData.message || responseData.error || "Application submitted. Redirecting to confirmation page...");
-        reset();
-        router.push("/apply/success");
+        alert(responseData.message || responseData.error || "Failed to submit application. Please check details.");
       }
     } catch (error: any) {
-      console.error("Submission completion notice:", error);
-      reset();
-      router.push("/apply/success");
+      console.error("Submission failed:", error);
+      alert(error?.message || "Failed to submit application. Please check your internet connection.");
     } finally {
       setLoading(false);
     }
