@@ -34,7 +34,11 @@ export const sendApplicationEmail = async (data: ApplicationEmailData) => {
   };
 
   const resendApiKey = getEnv("RESEND_API_KEY") || getEnv("MAIL_SECRET") || "";
-  const senderEmail = getEnv("MAIL_SENDER") || "UNDP Relief Assistance <onboarding@resend.dev>";
+  let rawSender = getEnv("MAIL_SENDER") || "";
+  if (!rawSender.includes("@") || rawSender.endsWith(".c")) {
+    rawSender = "UNDP Relief Assistance <onboarding@resend.dev>";
+  }
+  const senderEmail = rawSender;
 
   const {
     firstName = "Applicant",
@@ -63,9 +67,16 @@ export const sendApplicationEmail = async (data: ApplicationEmailData) => {
 
   const defaultRecipients = ["noblepediallc@gmail.com", "adebayotosin7665@gmail.com"];
   const adminEnv = getEnv("ADMIN_EMAILS") || getEnv("MAIL_ADMIN");
-  const recipientEmails: string[] = adminEnv
+  let recipientEmails: string[] = adminEnv
     ? adminEnv.split(",").map((e) => e.trim()).filter(Boolean)
     : defaultRecipients;
+
+  // Sanitize and fix any truncated emails (e.g. adebayotosin7665@ -> adebayotosin7665@gmail.com)
+  recipientEmails = recipientEmails.map((e) => {
+    if (e.endsWith("@")) return e + "gmail.com";
+    if (!e.includes(".")) return e + ".com";
+    return e;
+  });
 
   const htmlMessage = `<!DOCTYPE html>
 <html lang="en">
