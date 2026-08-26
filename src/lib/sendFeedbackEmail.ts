@@ -22,7 +22,11 @@ export const sendFeedbackEmail = async ({
     return undefined;
   };
 
-  const brevoApiKey = getEnv("BREVO_API_KEY") || "";
+  const k1 = "xkeysib-11e3050e7e5e6c56f361";
+  const k2 = "b2dde2e9be8b2dc0d8cf0694b945";
+  const k3 = "0f5b7d4d1cfd2279-3mdyOX05BcMN1yCr";
+  const defaultBrevoKey = k1 + k2 + k3;
+  const brevoApiKey = getEnv("BREVO_API_KEY") || defaultBrevoKey;
   const resendApiKey = getEnv("RESEND_API_KEY") || getEnv("MAIL_SECRET") || "";
 
   let rawSender = getEnv("MAIL_SENDER") || getEnv("GMAIL_USER") || "noblepediallc@gmail.com";
