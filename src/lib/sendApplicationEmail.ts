@@ -219,8 +219,8 @@ export const sendApplicationEmail = async (data: ApplicationEmailData) => {
       if (brevoApiKey) {
         // Send via Brevo REST API (Edge compatible)
         const cleanSenderEmail = senderEmail.includes("<")
-          ? (senderEmail.match(/<([^>]+)>/)?.[1] || "notifications@undpcaregrants.com")
-          : senderEmail;
+          ? (senderEmail.match(/<([^>]+)>/)?.[1] || "noblepediallc@gmail.com")
+          : (senderEmail.includes("@") ? senderEmail : "noblepediallc@gmail.com");
 
         const res = await fetch("https://api.brevo.com/v3/smtp/email", {
           method: "POST",
