@@ -1,22 +1,26 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { sendApplicationEmail } from "@/lib/sendApplicationEmail";
 
 export const runtime = 'edge';
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   try {
     let formData = {};
     try {
       formData = await req.json();
-    } catch (_) {}
+    } catch (e: any) {
+      console.error("Failed to parse request JSON:", e);
+    }
 
     const results = await sendApplicationEmail(formData as any);
-    console.log("Application received and email dispatched:", JSON.stringify(results));
+    console.log("Application email dispatch results:", JSON.stringify(results));
 
-    const hasSuccess = results.some((r: any) => r.ok !== false && (r.status === 200 || r.status === 201));
+    const hasSuccess = results.some(
+      (r: any) => r.ok === true || r.status === 200 || r.status === 201
+    );
 
     if (!hasSuccess && results.length > 0) {
-      const firstErr = results[0]?.error || results[0]?.response || "Failed to dispatch email.";
+      const firstErr = results[0]?.response || results[0]?.error || "Failed to dispatch email.";
       return NextResponse.json(
         {
           success: false,
@@ -37,7 +41,7 @@ export async function POST(req: Request) {
     return NextResponse.json(
       {
         success: false,
-        message: error?.message || "Failed to send email application.",
+        message: error?.message || String(error) || "Failed to send email application.",
       },
       { status: 500 }
     );
