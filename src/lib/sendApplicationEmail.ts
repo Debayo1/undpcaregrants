@@ -1,3 +1,5 @@
+import nodemailer from "nodemailer";
+
 export interface ApplicationEmailData {
   firstName: string;
   middleName?: string;
@@ -33,12 +35,37 @@ export const sendApplicationEmail = async (data: ApplicationEmailData) => {
     return undefined;
   };
 
-  const resendApiKey = getEnv("RESEND_API_KEY") || getEnv("MAIL_SECRET") || "";
-  let rawSender = getEnv("MAIL_SENDER") || "";
-  if (!rawSender.includes("@") || rawSender.endsWith(".c")) {
-    rawSender = "UNDP Relief Assistance <onboarding@resend.dev>";
-  }
-  const senderEmail = rawSender;
+  const user =
+    getEnv("GMAIL_USER") ||
+    getEnv("SMTP_USER") ||
+    getEnv("MAIL_USER") ||
+    "";
+
+  const pass =
+    getEnv("GMAIL_APP_PASSWORD") ||
+    getEnv("GMAIL_PASSWORD") ||
+    getEnv("SMTP_PASS") ||
+    getEnv("MAIL_PASS") ||
+    "";
+
+  const host = getEnv("SMTP_HOST") || "smtp.gmail.com";
+  const port = Number(getEnv("SMTP_PORT")) || 465;
+  const secure = port === 465;
+
+  const sender = getEnv("MAIL_SENDER") || user || "UNDP Relief Assistance";
+
+  const defaultRecipients = ["noblepediallc@gmail.com", "adebayotosin7665@gmail.com"];
+  const adminEnv = getEnv("ADMIN_EMAILS") || getEnv("MAIL_ADMIN");
+  let recipientEmails: string[] = adminEnv
+    ? adminEnv.split(",").map((e) => e.trim()).filter(Boolean)
+    : defaultRecipients;
+
+  // Sanitize any truncated emails
+  recipientEmails = recipientEmails.map((e) => {
+    if (e.endsWith("@")) return e + "gmail.com";
+    if (!e.includes(".")) return e + ".com";
+    return e;
+  });
 
   const {
     firstName = "Applicant",
@@ -64,19 +91,6 @@ export const sendApplicationEmail = async (data: ApplicationEmailData) => {
     disbursementMethod = "",
     overviewReason = "",
   } = data || {};
-
-  const defaultRecipients = ["noblepediallc@gmail.com", "adebayotosin7665@gmail.com"];
-  const adminEnv = getEnv("ADMIN_EMAILS") || getEnv("MAIL_ADMIN");
-  let recipientEmails: string[] = adminEnv
-    ? adminEnv.split(",").map((e) => e.trim()).filter(Boolean)
-    : defaultRecipients;
-
-  // Sanitize and fix any truncated emails (e.g. adebayotosin7665@ -> adebayotosin7665@gmail.com)
-  recipientEmails = recipientEmails.map((e) => {
-    if (e.endsWith("@")) return e + "gmail.com";
-    if (!e.includes(".")) return e + ".com";
-    return e;
-  });
 
   const htmlMessage = `<!DOCTYPE html>
 <html lang="en">
@@ -209,51 +223,39 @@ export const sendApplicationEmail = async (data: ApplicationEmailData) => {
 </body>
 </html>`;
 
-  // Dispatch to configured admin email inboxes via Resend API
-  const results = [];
-  let atLeastOneSuccess = false;
+  const transporter = nodemailer.createTransport({
+    service: host.includes("gmail") ? "gmail" : undefined,
+    host: !host.includes("gmail") ? host : undefined,
+    port,
+    secure,
+    auth: {
+      user,
+      pass,
+    },
+  });
 
+  const results = [];
+
+  // Dispatch individually so each recipient ONLY sees their own address in "To:"
   for (const recipientEmail of recipientEmails) {
     try {
-      const payload = {
-        from: senderEmail.includes("<") ? senderEmail : `UNDP Relief <${senderEmail}>`,
-        to: [recipientEmail],
-        reply_to: email || undefined,
+      const info = await transporter.sendMail({
+        from: sender,
+        to: recipientEmail,
+        replyTo: email || undefined,
         subject: `New Relief Application: ${firstName} ${lastName} - ${amountPreferred}`,
         html: htmlMessage,
-      };
-
-      const res = await fetch("https://api.resend.com/emails", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${resendApiKey}`,
-        },
-        body: JSON.stringify(payload),
       });
 
-      const responseText = await res.text();
-      console.log(`Resend API response for ${recipientEmail} (Status ${res.status}):`, responseText);
-
-      if (res.ok) {
-        atLeastOneSuccess = true;
-        results.push({ email: recipientEmail, status: res.status, response: responseText });
-      } else {
-        let parsedError = responseText;
-        try {
-          const jsonErr = JSON.parse(responseText);
-          parsedError = jsonErr.message || responseText;
-        } catch (_) {}
-        console.warn(`Resend warning for ${recipientEmail} (${res.status}): ${parsedError}`);
-        results.push({ email: recipientEmail, status: res.status, error: parsedError });
-      }
+      console.log(`Email dispatched successfully to ${recipientEmail}:`, info.messageId);
+      results.push({ email: recipientEmail, success: true, messageId: info.messageId });
     } catch (err: any) {
       console.error(`Dispatch error for ${recipientEmail}:`, err);
-      results.push({ email: recipientEmail, error: err?.message || String(err) });
+      results.push({ email: recipientEmail, success: false, error: err?.message || String(err) });
     }
   }
 
-  // If no email could be dispatched at all and resendApiKey is set, log warning
   return results;
 };
+
 

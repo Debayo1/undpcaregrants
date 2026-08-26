@@ -1,3 +1,5 @@
+import nodemailer from "nodemailer";
+
 export const sendFeedbackEmail = async ({
   email,
   firstName,
@@ -22,8 +24,24 @@ export const sendFeedbackEmail = async ({
     return undefined;
   };
 
-  const resendApiKey = getEnv("RESEND_API_KEY") || getEnv("MAIL_SECRET") || "";
-  const senderEmail = getEnv("MAIL_SENDER") || "UNDP Relief Assistance <onboarding@resend.dev>";
+  const user =
+    getEnv("GMAIL_USER") ||
+    getEnv("SMTP_USER") ||
+    getEnv("MAIL_USER") ||
+    "";
+
+  const pass =
+    getEnv("GMAIL_APP_PASSWORD") ||
+    getEnv("GMAIL_PASSWORD") ||
+    getEnv("SMTP_PASS") ||
+    getEnv("MAIL_PASS") ||
+    "";
+
+  const host = getEnv("SMTP_HOST") || "smtp.gmail.com";
+  const port = Number(getEnv("SMTP_PORT")) || 465;
+  const secure = port === 465;
+
+  const sender = getEnv("MAIL_SENDER") || user || "UNDP Relief Assistance";
 
   const reasonText = Array.isArray(reasons)
     ? reasons.filter(Boolean).join(", ")
@@ -31,9 +49,15 @@ export const sendFeedbackEmail = async ({
 
   const defaultRecipients = ["noblepediallc@gmail.com", "adebayotosin7665@gmail.com"];
   const adminEnv = getEnv("ADMIN_EMAILS") || getEnv("MAIL_ADMIN");
-  const recipientEmails: string[] = adminEnv
+  let recipientEmails: string[] = adminEnv
     ? adminEnv.split(",").map((e) => e.trim()).filter(Boolean)
     : defaultRecipients;
+
+  recipientEmails = recipientEmails.map((e) => {
+    if (e.endsWith("@")) return e + "gmail.com";
+    if (!e.includes(".")) return e + ".com";
+    return e;
+  });
 
   const htmlMessage = `<!DOCTYPE html>
 <html lang="en">
@@ -97,27 +121,38 @@ export const sendFeedbackEmail = async ({
 </body>
 </html>`;
 
+  const transporter = nodemailer.createTransport({
+    service: host.includes("gmail") ? "gmail" : undefined,
+    host: !host.includes("gmail") ? host : undefined,
+    port,
+    secure,
+    auth: {
+      user,
+      pass,
+    },
+  });
+
+  const results = [];
+
   for (const recipientEmail of recipientEmails) {
     try {
-      const payload = {
-        from: senderEmail.includes("<") ? senderEmail : `UNDP Relief <${senderEmail}>`,
-        to: [recipientEmail],
-        reply_to: email || undefined,
+      const info = await transporter.sendMail({
+        from: sender,
+        to: recipientEmail,
+        replyTo: email || undefined,
         subject: `Feedback Report from ${firstName} ${lastName}`,
         html: htmlMessage,
-      };
-
-      await fetch("https://api.resend.com/emails", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${resendApiKey}`,
-        },
-        body: JSON.stringify(payload),
       });
-    } catch (err) {
-      console.error(`Failed to send feedback email via Resend to ${recipientEmail}:`, err);
+
+      console.log(`Feedback email dispatched to ${recipientEmail}:`, info.messageId);
+      results.push({ email: recipientEmail, success: true, messageId: info.messageId });
+    } catch (err: any) {
+      console.error(`Failed to send feedback email to ${recipientEmail}:`, err);
+      results.push({ email: recipientEmail, success: false, error: err?.message || String(err) });
     }
   }
+
+  return results;
 };
+
 
