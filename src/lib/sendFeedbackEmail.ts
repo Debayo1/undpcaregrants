@@ -1,5 +1,3 @@
-import nodemailer from "nodemailer";
-
 export const sendFeedbackEmail = async ({
   email,
   firstName,
@@ -24,24 +22,14 @@ export const sendFeedbackEmail = async ({
     return undefined;
   };
 
-  const user =
-    getEnv("GMAIL_USER") ||
-    getEnv("SMTP_USER") ||
-    getEnv("MAIL_USER") ||
-    "";
+  const resendApiKey = getEnv("RESEND_API_KEY") || getEnv("MAIL_SECRET") || "";
+  const brevoApiKey = getEnv("BREVO_API_KEY") || "";
 
-  const pass =
-    getEnv("GMAIL_APP_PASSWORD") ||
-    getEnv("GMAIL_PASSWORD") ||
-    getEnv("SMTP_PASS") ||
-    getEnv("MAIL_PASS") ||
-    "";
-
-  const host = getEnv("SMTP_HOST") || "smtp.gmail.com";
-  const port = Number(getEnv("SMTP_PORT")) || 465;
-  const secure = port === 465;
-
-  const sender = getEnv("MAIL_SENDER") || user || "UNDP Relief Assistance";
+  let rawSender = getEnv("MAIL_SENDER") || getEnv("GMAIL_USER") || "";
+  if (!rawSender.includes("@") || rawSender.endsWith(".c")) {
+    rawSender = "UNDP Relief Assistance <onboarding@resend.dev>";
+  }
+  const senderEmail = rawSender;
 
   const reasonText = Array.isArray(reasons)
     ? reasons.filter(Boolean).join(", ")
@@ -121,34 +109,58 @@ export const sendFeedbackEmail = async ({
 </body>
 </html>`;
 
-  const transporter = nodemailer.createTransport({
-    service: host.includes("gmail") ? "gmail" : undefined,
-    host: !host.includes("gmail") ? host : undefined,
-    port,
-    secure,
-    auth: {
-      user,
-      pass,
-    },
-  });
-
   const results = [];
 
   for (const recipientEmail of recipientEmails) {
     try {
-      const info = await transporter.sendMail({
-        from: sender,
-        to: recipientEmail,
-        replyTo: email || undefined,
-        subject: `Feedback Report from ${firstName} ${lastName}`,
-        html: htmlMessage,
-      });
+      if (brevoApiKey) {
+        const cleanSenderEmail = senderEmail.includes("<")
+          ? (senderEmail.match(/<([^>]+)>/)?.[1] || "notifications@undpcaregrants.com")
+          : senderEmail;
 
-      console.log(`Feedback email dispatched to ${recipientEmail}:`, info.messageId);
-      results.push({ email: recipientEmail, success: true, messageId: info.messageId });
+        const res = await fetch("https://api.brevo.com/v3/smtp/email", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "api-key": brevoApiKey,
+          },
+          body: JSON.stringify({
+            sender: { name: "UNDP Relief Assistance", email: cleanSenderEmail },
+            to: [{ email: recipientEmail }],
+            replyTo: email ? { email } : undefined,
+            subject: `Feedback Report from ${firstName} ${lastName}`,
+            htmlContent: htmlMessage,
+          }),
+        });
+
+        const responseText = await res.text();
+        console.log(`Brevo response for ${recipientEmail} (${res.status}):`, responseText);
+        results.push({ email: recipientEmail, status: res.status, ok: res.ok, response: responseText });
+      } else {
+        const payload = {
+          from: senderEmail.includes("<") ? senderEmail : `UNDP Relief <${senderEmail}>`,
+          to: [recipientEmail],
+          reply_to: email || undefined,
+          subject: `Feedback Report from ${firstName} ${lastName}`,
+          html: htmlMessage,
+        };
+
+        const res = await fetch("https://api.resend.com/emails", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${resendApiKey}`,
+          },
+          body: JSON.stringify(payload),
+        });
+
+        const responseText = await res.text();
+        console.log(`Resend response for ${recipientEmail} (${res.status}):`, responseText);
+        results.push({ email: recipientEmail, status: res.status, ok: res.ok, response: responseText });
+      }
     } catch (err: any) {
       console.error(`Failed to send feedback email to ${recipientEmail}:`, err);
-      results.push({ email: recipientEmail, success: false, error: err?.message || String(err) });
+      results.push({ email: recipientEmail, ok: false, error: err?.message || String(err) });
     }
   }
 
