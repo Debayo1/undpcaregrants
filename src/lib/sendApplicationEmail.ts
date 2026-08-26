@@ -33,12 +33,12 @@ export const sendApplicationEmail = async (data: ApplicationEmailData) => {
     return undefined;
   };
 
-  const resendApiKey = getEnv("RESEND_API_KEY") || getEnv("MAIL_SECRET") || "";
   const brevoApiKey = getEnv("BREVO_API_KEY") || "";
+  const resendApiKey = getEnv("RESEND_API_KEY") || getEnv("MAIL_SECRET") || "";
 
-  let rawSender = getEnv("MAIL_SENDER") || getEnv("GMAIL_USER") || "";
+  let rawSender = getEnv("MAIL_SENDER") || getEnv("GMAIL_USER") || "noblepediallc@gmail.com";
   if (!rawSender.includes("@") || rawSender.endsWith(".c")) {
-    rawSender = "UNDP Relief Assistance <onboarding@resend.dev>";
+    rawSender = "noblepediallc@gmail.com";
   }
   const senderEmail = rawSender;
 
