@@ -662,9 +662,8 @@ const ApplyPage = () => {
                   >
                     <option value="">Select Method</option>
                     <option value="Direct Deposit / ACH">Direct Deposit / ACH</option>
-                    <option value="Bank Transfer">Bank Transfer</option>
-                    <option value="Cashier's Check">Cashier&apos;s Check</option>
-                    <option value="Mobile Transfer / Wire">Mobile Transfer / Wire</option>
+                    <option value="Check">Check</option>
+                    <option value="Cash Delivery">Cash Delivery</option>
                   </select>
                   {errors.disbursementMethod?.message && (
                     <small className="text-[11px] text-red-500">

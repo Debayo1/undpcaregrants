@@ -62,7 +62,7 @@ export default function ApplicationSuccessPage() {
                 3
               </span>
               <p>
-                <strong>Disbursement:</strong> Once approved, relief funds will be dispatched via your preferred method (Direct Deposit / ACH, Bank Transfer, Cashier&apos;s Check, or Wire).
+                <strong>Disbursement:</strong> Once approved, relief funds will be dispatched via your preferred method (Direct Deposit / ACH, Check, or Cash Delivery).
               </p>
             </div>
           </div>
