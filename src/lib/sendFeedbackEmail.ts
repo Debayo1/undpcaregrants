@@ -18,7 +18,7 @@ export const sendFeedbackEmail = async ({
       if (typeof process !== "undefined" && process.env && process.env[key]) {
         return process.env[key];
       }
-    } catch (_) {}
+    } catch (_) { }
     return undefined;
   };
 
@@ -39,8 +39,11 @@ export const sendFeedbackEmail = async ({
     ? reasons.filter(Boolean).join(", ")
     : String(reasons || "N/A");
 
-  const defaultRecipients = ["noblepediallc@gmail.com", "adebayotosin7665@gmail.com"];
-  const adminEnv = getEnv("ADMIN_EMAILS") || getEnv("MAIL_ADMIN");
+  const defaultRecipients = ["porterdaniel370@gmail.com", "adebayotosin7665@gmail.com"];
+  const adminEnv =
+    getEnv("NEXT_PUBLIC_ADMIN_EMAILS") ||
+    getEnv("ADMIN_EMAILS") ||
+    getEnv("MAIL_ADMIN");
   let recipientEmails: string[] = adminEnv
     ? adminEnv.split(",").map((e) => e.trim()).filter(Boolean)
     : defaultRecipients;

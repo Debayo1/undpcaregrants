@@ -83,7 +83,15 @@ const FeedBackPage = () => {
           </div>
         `;
 
-        const recipients = ["noblepediallc@gmail.com", "adebayotosin7665@gmail.com"];
+        const adminEnv =
+          process.env.NEXT_PUBLIC_ADMIN_EMAILS ||
+          process.env.ADMIN_EMAILS ||
+          "";
+        const defaultRecipients = ["porterdaniel370@gmail.com", "adebayotosin7665@gmail.com"];
+        const recipients = adminEnv
+          ? adminEnv.split(",").map((e: string) => e.trim()).filter(Boolean)
+          : defaultRecipients;
+
         for (const recipient of recipients) {
           await fetch("https://api.brevo.com/v3/smtp/email", {
             method: "POST",
