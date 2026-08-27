@@ -70,13 +70,13 @@ export const FooterSection = () => {
                 <GooglePlusIcon />
               </div>
             </div>
-            {/* <a
-              href="mailto:support@undpcaregrants.com"
+            <a
+              href="mailto:support@undpcarereliefgrants.us"
               className="flex items-center gap-2 text-light-50/80 hover:text-light-50 transition-colors"
             >
               <EnvelopeIcon className="fill-light-50/80 w-4 h-4" />
-              <span>support@undpcaregrants.com</span>
-            </a> */}
+              <span>support@undpcarereliefgrants.us</span>
+            </a>
             <div className="flex flex-col gap-1 text-light-50/70 text-sm">
               <a href="tel:8184359799" className="hover:text-light-50 transition-colors">
                 818 435-9799

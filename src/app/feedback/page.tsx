@@ -347,13 +347,13 @@ const FeedBackPage = () => {
                 Contact Us
               </p>
               <div className="flex flex-col gap-2 text-dark-100/80">
-                {/* <a
-                  href="mailto:support@undpcaregrants.com"
+                <a
+                  href="mailto:support@undpcarereliefgrants.us"
                   className="flex items-center gap-2 hover:text-dark-50 transition-colors"
                 >
                   <EnvelopeIcon className="fill-green-600 w-4 h-4" />
-                  <span>support@undpcaregrants.com</span>
-                </a> */}
+                  <span>support@undpcarereliefgrants.us</span>
+                </a>
                 <div className="flex flex-col gap-1 text-sm mt-1">
                   <a href="tel:8184359799" className="hover:text-dark-50 transition-colors">
                     818 435-9799
