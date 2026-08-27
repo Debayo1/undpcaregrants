@@ -22,12 +22,5 @@
       "persist": true,
       "head_sampling_rate": 1
     }
-  },
-  "d1_databases": [
-    {
-      "binding": "DB",
-      "database_name": "undpcaregrants",
-      "database_id": "51f98d8e-91e3-4c02-a4ca-34949f9eb241"
-    }
-  ]
+  }
 }
