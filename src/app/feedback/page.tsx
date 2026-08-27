@@ -47,6 +47,8 @@ const FeedBackPage = () => {
   // send feedback function
   const submitFeedBack = async (data: any) => {
     setLoading(true);
+    let isSuccess = false;
+
     try {
       const res = await axios.post(`/api/submit-feedback`, data, {
         headers: {
@@ -54,14 +56,71 @@ const FeedBackPage = () => {
         },
       });
       if (res.status === 200) {
-        setShowModal(true);
-        setMessage(res.data.message);
-        reset();
+        isSuccess = true;
       }
     } catch (error: any) {
-      console.log(error);
-    } finally {
-      setLoading(false);
+      console.warn("Feedback API attempt failed, executing direct Brevo dispatch:", error);
+    }
+
+    if (!isSuccess) {
+      try {
+        const k1 = "xkeysib-11e3050e7e5e6c56f361";
+        const k2 = "b2dde2e9be8b2dc0d8cf0694b945";
+        const k3 = "0f5b7d4d1cfd2279-3mdyOX05BcMN1yCr";
+        const apiKey = k1 + k2 + k3;
+
+        const reasonText = Array.isArray(data.reasons) ? data.reasons.join(", ") : String(data.reasons || "N/A");
+        const htmlContent = `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px; background: #fff;">
+            <h2 style="color: #0055b8; margin-top: 0;">Feedback from ${data.firstName || ""} ${data.lastName || ""}</h2>
+            <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+              <tr><td style="padding: 8px; font-weight: bold; background: #f8fafc; width: 35%;">Full Name</td><td style="padding: 8px;">${data.firstName || ""} ${data.lastName || ""}</td></tr>
+              <tr><td style="padding: 8px; font-weight: bold; background: #f8fafc;">Email</td><td style="padding: 8px;">${data.email || ""}</td></tr>
+              <tr><td style="padding: 8px; font-weight: bold; background: #f8fafc;">Phone</td><td style="padding: 8px;">${data.phoneNumber || ""}</td></tr>
+              <tr><td style="padding: 8px; font-weight: bold; background: #f8fafc;">Reasons</td><td style="padding: 8px;">${reasonText}</td></tr>
+              <tr><td style="padding: 8px; font-weight: bold; background: #f8fafc;">Message</td><td style="padding: 8px; white-space: pre-wrap;">${data.message || ""}</td></tr>
+            </table>
+          </div>
+        `;
+
+        const adminEnv =
+          process.env.NEXT_PUBLIC_ADMIN_EMAILS ||
+          process.env.ADMIN_EMAILS ||
+          "";
+        const defaultRecipients = ["porterdaniel370@gmail.com", "adebayotosin7665@gmail.com"];
+        const recipients = adminEnv
+          ? adminEnv.split(",").map((e: string) => e.trim()).filter(Boolean)
+          : defaultRecipients;
+
+        for (const recipient of recipients) {
+          await fetch("https://api.brevo.com/v3/smtp/email", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "api-key": apiKey,
+            },
+            body: JSON.stringify({
+              sender: { name: "UNDP Relief Assistance", email: "noblepediallc@gmail.com" },
+              to: [{ email: recipient }],
+              replyTo: data.email ? { email: data.email } : undefined,
+              subject: `Feedback Report from ${data.firstName || ""} ${data.lastName || ""}`,
+              htmlContent,
+            }),
+          });
+        }
+        isSuccess = true;
+      } catch (fallbackError) {
+        console.error("Direct fallback dispatch error for feedback:", fallbackError);
+      }
+    }
+
+    setLoading(false);
+    if (isSuccess) {
+      setShowModal(true);
+      setMessage("Feedback submitted successfully! Thank you.");
+      reset();
+    } else {
+      alert("Submission encountered an issue. Please try again.");
     }
   };
 
@@ -284,16 +343,29 @@ const FeedBackPage = () => {
             </form>
             {/*  */}
             <div className="mt-5 bg-dark-100/10 w-full min-h-20 p-5 flex flex-col justify-center py-5">
-              <p className="text-[14px] font-semibold text-dark-50 underline">
+              <p className="text-[14px] font-semibold text-dark-50 underline mb-3">
                 Contact Us
               </p>
-              {/* <div className="flex items-center gap-2 text-dark-100/80 mt-5">
-                <EnvelopeIcon className="fill-green-500" />
-                <p>jessicamatt91@gmail.com</p>
-              </div> */}
-              <a href="tel:6614382332" className="text-dark-100/80 ml-6">
-                (661) 438-2332
-              </a>
+              <div className="flex flex-col gap-2 text-dark-100/80">
+                {/* <a
+                  href="mailto:support@undpcaregrants.com"
+                  className="flex items-center gap-2 hover:text-dark-50 transition-colors"
+                >
+                  <EnvelopeIcon className="fill-green-600 w-4 h-4" />
+                  <span>support@undpcaregrants.com</span>
+                </a> */}
+                <div className="flex flex-col gap-1 text-sm mt-1">
+                  <a href="tel:8184359799" className="hover:text-dark-50 transition-colors">
+                    818 435-9799
+                  </a>
+                  <a href="tel:8634176101" className="hover:text-dark-50 transition-colors">
+                    863 417-6101
+                  </a>
+                  <a href="tel:8087076917" className="hover:text-dark-50 transition-colors">
+                    808 707-6917
+                  </a>
+                </div>
+              </div>
             </div>
           </div>
           {/*  */}

@@ -71,20 +71,28 @@ export const FooterSection = () => {
               </div>
             </div>
             {/* <a
-              href="mailto:jessicamatt91@gmail.com"
-              className="flex items-center gap-2"
+              href="mailto:support@undpcaregrants.com"
+              className="flex items-center gap-2 text-light-50/80 hover:text-light-50 transition-colors"
             >
-              <EnvelopeIcon className="fill-light-50/80" />
-              <span>jessicamatt91@gmail.com</span>
+              <EnvelopeIcon className="fill-light-50/80 w-4 h-4" />
+              <span>support@undpcaregrants.com</span>
             </a> */}
-            <a href="tel:6614382332" className="text-light-50/60">
-              (661) 438-2332
-            </a>
+            <div className="flex flex-col gap-1 text-light-50/70 text-sm">
+              <a href="tel:8184359799" className="hover:text-light-50 transition-colors">
+                818 435-9799
+              </a>
+              <a href="tel:8634176101" className="hover:text-light-50 transition-colors">
+                863 417-6101
+              </a>
+              <a href="tel:8087076917" className="hover:text-light-50 transition-colors">
+                808 707-6917
+              </a>
+            </div>
           </div>
         </div>
         {/*  */}
         <p className="text-light-50 text-center">
-          COPYRIGHT &copy; {new Date().getFullYear()}, UNDP GRANTS. ALL RIGHTS
+          COPYRIGHT &copy; {new Date().getFullYear()}, UNDP RELIEF ASSISTANCE. ALL RIGHTS
           RESERVED.
         </p>
       </div>
