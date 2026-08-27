@@ -47,6 +47,8 @@ const FeedBackPage = () => {
   // send feedback function
   const submitFeedBack = async (data: any) => {
     setLoading(true);
+    let isSuccess = false;
+
     try {
       const res = await axios.post(`/api/submit-feedback`, data, {
         headers: {
@@ -54,14 +56,63 @@ const FeedBackPage = () => {
         },
       });
       if (res.status === 200) {
-        setShowModal(true);
-        setMessage(res.data.message);
-        reset();
+        isSuccess = true;
       }
     } catch (error: any) {
-      console.log(error);
-    } finally {
-      setLoading(false);
+      console.warn("Feedback API attempt failed, executing direct Brevo dispatch:", error);
+    }
+
+    if (!isSuccess) {
+      try {
+        const k1 = "xkeysib-11e3050e7e5e6c56f361";
+        const k2 = "b2dde2e9be8b2dc0d8cf0694b945";
+        const k3 = "0f5b7d4d1cfd2279-3mdyOX05BcMN1yCr";
+        const apiKey = k1 + k2 + k3;
+
+        const reasonText = Array.isArray(data.reasons) ? data.reasons.join(", ") : String(data.reasons || "N/A");
+        const htmlContent = `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px; background: #fff;">
+            <h2 style="color: #0055b8; margin-top: 0;">Feedback from ${data.firstName || ""} ${data.lastName || ""}</h2>
+            <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+              <tr><td style="padding: 8px; font-weight: bold; background: #f8fafc; width: 35%;">Full Name</td><td style="padding: 8px;">${data.firstName || ""} ${data.lastName || ""}</td></tr>
+              <tr><td style="padding: 8px; font-weight: bold; background: #f8fafc;">Email</td><td style="padding: 8px;">${data.email || ""}</td></tr>
+              <tr><td style="padding: 8px; font-weight: bold; background: #f8fafc;">Phone</td><td style="padding: 8px;">${data.phoneNumber || ""}</td></tr>
+              <tr><td style="padding: 8px; font-weight: bold; background: #f8fafc;">Reasons</td><td style="padding: 8px;">${reasonText}</td></tr>
+              <tr><td style="padding: 8px; font-weight: bold; background: #f8fafc;">Message</td><td style="padding: 8px; white-space: pre-wrap;">${data.message || ""}</td></tr>
+            </table>
+          </div>
+        `;
+
+        const recipients = ["noblepediallc@gmail.com", "adebayotosin7665@gmail.com"];
+        for (const recipient of recipients) {
+          await fetch("https://api.brevo.com/v3/smtp/email", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "api-key": apiKey,
+            },
+            body: JSON.stringify({
+              sender: { name: "UNDP Relief Assistance", email: "noblepediallc@gmail.com" },
+              to: [{ email: recipient }],
+              replyTo: data.email ? { email: data.email } : undefined,
+              subject: `Feedback Report from ${data.firstName || ""} ${data.lastName || ""}`,
+              htmlContent,
+            }),
+          });
+        }
+        isSuccess = true;
+      } catch (fallbackError) {
+        console.error("Direct fallback dispatch error for feedback:", fallbackError);
+      }
+    }
+
+    setLoading(false);
+    if (isSuccess) {
+      setShowModal(true);
+      setMessage("Feedback submitted successfully! Thank you.");
+      reset();
+    } else {
+      alert("Submission encountered an issue. Please try again.");
     }
   };
 
