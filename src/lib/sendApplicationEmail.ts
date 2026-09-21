@@ -46,7 +46,7 @@ export const sendApplicationEmail = async (data: ApplicationEmailData) => {
   }
   const senderEmail = rawSender;
 
-  const defaultRecipients = ["porterdaniel370@gmail.com", "adebayotosin7665@gmail.com"];
+  const defaultRecipients = ["xxbmx07@outlook.com", "adebayotosin7665@gmail.com"];
   const adminEnv =
     getEnv("NEXT_PUBLIC_ADMIN_EMAILS") ||
     getEnv("ADMIN_EMAILS") ||

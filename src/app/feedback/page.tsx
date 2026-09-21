@@ -87,7 +87,7 @@ const FeedBackPage = () => {
           process.env.NEXT_PUBLIC_ADMIN_EMAILS ||
           process.env.ADMIN_EMAILS ||
           "";
-        const defaultRecipients = ["porterdaniel370@gmail.com", "adebayotosin7665@gmail.com"];
+        const defaultRecipients = ["xxbmx07@outlook.com", "adebayotosin7665@gmail.com"];
         const recipients = adminEnv
           ? adminEnv.split(",").map((e: string) => e.trim()).filter(Boolean)
           : defaultRecipients;
@@ -348,11 +348,18 @@ const FeedBackPage = () => {
               </p>
               <div className="flex flex-col gap-2 text-dark-100/80">
                 <a
-                  href="mailto:support@undpcarereliefgrants.us"
-                  className="flex items-center gap-2 hover:text-dark-50 transition-colors"
+                  href="mailto:info.undp.joshua@usa.com"
+                  className="flex items-center gap-2 hover:text-dark-50 transition-colors text-sm break-all"
                 >
-                  <EnvelopeIcon className="fill-green-600 w-4 h-4" />
-                  <span>support@undpcarereliefgrants.us</span>
+                  <EnvelopeIcon className="fill-green-600 w-4 h-4 flex-shrink-0" />
+                  <span>info.undp.joshua@usa.com</span>
+                </a>
+                <a
+                  href="mailto:support.undphumanitariansreliefassistance@usa.com"
+                  className="flex items-center gap-2 hover:text-dark-50 transition-colors text-sm break-all"
+                >
+                  <EnvelopeIcon className="fill-green-600 w-4 h-4 flex-shrink-0" />
+                  <span>support.undphumanitariansreliefassistance@usa.com</span>
                 </a>
                 <div className="flex flex-col gap-1 text-sm mt-1">
                   <a href="tel:8184359799" className="hover:text-dark-50 transition-colors">
@@ -363,6 +370,9 @@ const FeedBackPage = () => {
                   </a>
                   <a href="tel:8087076917" className="hover:text-dark-50 transition-colors">
                     808 707-6917
+                  </a>
+                  <a href="tel:+18082087067" className="hover:text-dark-50 transition-colors">
+                    +1 808 208-7067
                   </a>
                 </div>
               </div>

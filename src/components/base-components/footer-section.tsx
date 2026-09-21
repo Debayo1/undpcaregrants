@@ -70,13 +70,22 @@ export const FooterSection = () => {
                 <GooglePlusIcon />
               </div>
             </div>
-            <a
-              href="mailto:support@undpcarereliefgrants.us"
-              className="flex items-center gap-2 text-light-50/80 hover:text-light-50 transition-colors"
-            >
-              <EnvelopeIcon className="fill-light-50/80 w-4 h-4" />
-              <span>support@undpcarereliefgrants.us</span>
-            </a>
+            <div className="flex flex-col gap-2">
+              <a
+                href="mailto:info.undp.joshua@usa.com"
+                className="flex items-center gap-2 text-light-50/80 hover:text-light-50 transition-colors text-sm break-all"
+              >
+                <EnvelopeIcon className="fill-light-50/80 w-4 h-4 flex-shrink-0" />
+                <span>info.undp.joshua@usa.com</span>
+              </a>
+              <a
+                href="mailto:support.undphumanitariansreliefassistance@usa.com"
+                className="flex items-center gap-2 text-light-50/80 hover:text-light-50 transition-colors text-sm break-all"
+              >
+                <EnvelopeIcon className="fill-light-50/80 w-4 h-4 flex-shrink-0" />
+                <span>support.undphumanitariansreliefassistance@usa.com</span>
+              </a>
+            </div>
             <div className="flex flex-col gap-1 text-light-50/70 text-sm">
               <a href="tel:8184359799" className="hover:text-light-50 transition-colors">
                 818 435-9799
@@ -86,6 +95,9 @@ export const FooterSection = () => {
               </a>
               <a href="tel:8087076917" className="hover:text-light-50 transition-colors">
                 808 707-6917
+              </a>
+              <a href="tel:+18082087067" className="hover:text-light-50 transition-colors">
+                +1 808 208-7067
               </a>
             </div>
           </div>
