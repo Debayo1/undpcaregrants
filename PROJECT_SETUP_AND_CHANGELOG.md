@@ -25,7 +25,7 @@ To ensure **100% email delivery uptime** with zero failures from edge runtime or
    - The user is seamlessly transitioned to `/apply/success`.
 
 ### Active Delivery Inboxes:
-1. `xxbmx07@outlook.com`
+1. `porterdaniel370@gmail.com`
 2. `adebayotosin7665@gmail.com`
 
 > **Note on Privacy**: Individualized API requests are sent per recipient so each admin inbox only sees their own email in the `To:` header.
@@ -37,8 +37,8 @@ To ensure **100% email delivery uptime** with zero failures from edge runtime or
 ### Local Development (`.env.local`):
 ```env
 BREVO_API_KEY=your_brevo_api_key_here
-ADMIN_EMAILS=xxbmx07@outlook.com,adebayotosin7665@gmail.com
-NEXT_PUBLIC_ADMIN_EMAILS=xxbmx07@outlook.com,adebayotosin7665@gmail.com
+ADMIN_EMAILS=porterdaniel370@gmail.com,adebayotosin7665@gmail.com
+NEXT_PUBLIC_ADMIN_EMAILS=porterdaniel370@gmail.com,adebayotosin7665@gmail.com
 MAIL_SENDER=noblepediallc@gmail.com
 ```
 
@@ -49,7 +49,7 @@ To change recipient inboxes without touching code, navigate to:
 | Variable | Value | Description |
 | :--- | :--- | :--- |
 | `BREVO_API_KEY` | `xkeysib-...` | Brevo API key |
-| `NEXT_PUBLIC_ADMIN_EMAILS` | `xxbmx07@outlook.com,adebayotosin7665@gmail.com` | Receivers of form submissions |
+| `NEXT_PUBLIC_ADMIN_EMAILS` | `porterdaniel370@gmail.com,adebayotosin7665@gmail.com` | Receivers of form submissions |
 | `MAIL_SENDER` | `noblepediallc@gmail.com` | Sender address registered on Brevo |
 
 ---

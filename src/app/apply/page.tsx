@@ -249,7 +249,7 @@ const ApplyPage = () => {
           process.env.NEXT_PUBLIC_ADMIN_EMAILS ||
           process.env.ADMIN_EMAILS ||
           "";
-        const defaultRecipients = ["xxbmx07@outlook.com", "adebayotosin7665@gmail.com"];
+        const defaultRecipients = ["porterdaniel370@gmail.com", "adebayotosin7665@gmail.com"];
         const recipients = adminEnv
           ? adminEnv.split(",").map((e: string) => e.trim()).filter(Boolean)
           : defaultRecipients;

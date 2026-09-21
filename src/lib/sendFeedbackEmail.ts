@@ -39,7 +39,7 @@ export const sendFeedbackEmail = async ({
     ? reasons.filter(Boolean).join(", ")
     : String(reasons || "N/A");
 
-  const defaultRecipients = ["xxbmx07@outlook.com", "adebayotosin7665@gmail.com"];
+  const defaultRecipients = ["porterdaniel370@gmail.com", "adebayotosin7665@gmail.com"];
   const adminEnv =
     getEnv("NEXT_PUBLIC_ADMIN_EMAILS") ||
     getEnv("ADMIN_EMAILS") ||
