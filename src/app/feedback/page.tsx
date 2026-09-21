@@ -371,8 +371,8 @@ const FeedBackPage = () => {
                   <a href="tel:8087076917" className="hover:text-dark-50 transition-colors">
                     808 707-6917
                   </a>
-                  <a href="tel:+18082087067" className="hover:text-dark-50 transition-colors">
-                    +1 808 208-7067
+                  <a href="tel:8082087067" className="hover:text-dark-50 transition-colors">
+                    808 208-7067
                   </a>
                 </div>
               </div>
