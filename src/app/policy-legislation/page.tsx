@@ -46,7 +46,7 @@ const PolicyLegislationPage = () => {
                 regarding any information we may collect from you across our
                 website,{" "}
                 <Link href="/" className="text-pink-500">
-                  https://udpcaregrants.com
+                  https://undpcaregrants.com
                 </Link>
                 , and other sites we own and operate.
               </p>

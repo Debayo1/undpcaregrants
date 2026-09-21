@@ -45,7 +45,7 @@ const TermsOfServicePage = () => {
               <p className="text-base sm:text-lg text-dark-100/70">
                 By accessing the website at&nbsp;
                 <Link href="/" className="text-pink-500">
-                  https://udpcaregrants.com
+                  https://undpcaregrants.com
                 </Link>
                 , you are agreeing to be bound by these terms of service, all
                 applicable laws and regulations, and agree that you are

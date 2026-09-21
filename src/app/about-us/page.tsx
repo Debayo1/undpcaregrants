@@ -79,7 +79,7 @@ const AboutUsPage = () => {
                   lists all of the available funding programs to all levels of
                   government, nonprofit organizations, for-profit businesses,
                   and other eligible entities. Search Grants within
-                  udpcaregrants.com allows you to search, filter, and apply for
+                  undpcaregrants.com allows you to search, filter, and apply for
                   specific opportunities to receive funding from one of these
                   programs.
                 </p>
@@ -90,7 +90,7 @@ const AboutUsPage = () => {
                 </p>
                 <p className="text-lg sm:text-xl text-dark-100/70">
                   Note: The information below is not exhaustive, and
-                  udpcaregrants.com is not affiliated with, nor endorsing, any
+                  undpcaregrants.com is not affiliated with, nor endorsing, any
                   of these resources. They are provided as a convenience to
                   prospective grant applicants.
                 </p>
@@ -141,7 +141,7 @@ const AboutUsPage = () => {
                   organization or as an individual, then you are ready to check
                   your eligibility. There are many types of organizations
                   generally eligible to apply for funding opportunities on
-                  udpcaregrants.com. Each type of organization listed in the
+                  undpcaregrants.com. Each type of organization listed in the
                   categories below is a specific search criterion in Search
                   Grants. Individual applicants are welcome too! Government
                   Organizations State governments County governments City or

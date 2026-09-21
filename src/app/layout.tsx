@@ -12,35 +12,37 @@ const varela = Varela({
 });
 
 export const metadata: Metadata = {
-  title: "UDP Care Grants",
-  description: "UDP Care Grants website, where help is given to those in need",
+  title: "UNDP Relief Assistance",
+  description: "UNDP Relief Assistance website, where help is given to those in need",
   icons: {
     icon: "/icon1.png",
   },
   twitter: {
-    title: "UDP Care Grants",
+    title: "UNDP Relief Assistance",
     card: "summary_large_image",
     creator: "",
     site: "",
     images: ["https://www.udpreliefcaregrants.com/udp-preview.png"],
     description:
-      "UDP Care Grants website, where help is given to those in need",
+      "UNDP Relief Assistance website, where help is given to those in need",
   },
   keywords: [
-    "UDP",
+    "UNDP",
+    "Relief",
+    "Assistance",
     "Care",
     "Grants",
-    "udpcaregrants",
-    "udp relief",
-    "udprelief",
+    "undpreliefassistance",
+    "undpcaregrants",
+    "undp relief",
     "get grant help",
-    "Relief care grants",
-    "udp care grants",
+    "Relief assistance grants",
+    "undp relief assistance",
   ],
   openGraph: {
-    title: "UDP Care Grants",
+    title: "UNDP Relief Assistance",
     description:
-      "UDP Care Grants website, where help is given to those in need",
+      "UNDP Relief Assistance website, where help is given to those in need",
     url: "https://www.udpreliefcaregrants.com",
     images: [
       {
@@ -49,7 +51,7 @@ export const metadata: Metadata = {
         height: 600,
       },
     ],
-    siteName: "UDP Care Grants",
+    siteName: "UNDP Relief Assistance",
     locale: "en_US",
     type: "website",
   },

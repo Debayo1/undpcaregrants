@@ -70,21 +70,41 @@ export const FooterSection = () => {
                 <GooglePlusIcon />
               </div>
             </div>
-            {/* <a
-              href="mailto:jessicamatt91@gmail.com"
-              className="flex items-center gap-2"
-            >
-              <EnvelopeIcon className="fill-light-50/80" />
-              <span>jessicamatt91@gmail.com</span>
-            </a> */}
-            <a href="tel:6614382332" className="text-light-50/60">
-              (661) 438-2332
-            </a>
+            <div className="flex flex-col gap-2">
+              <a
+                href="mailto:info.undp.joshua@usa.com"
+                className="flex items-center gap-2 text-light-50/80 hover:text-light-50 transition-colors text-sm break-all"
+              >
+                <EnvelopeIcon className="fill-light-50/80 w-4 h-4 flex-shrink-0" />
+                <span>info.undp.joshua@usa.com</span>
+              </a>
+              <a
+                href="mailto:support.undphumanitariansreliefassistance@usa.com"
+                className="flex items-center gap-2 text-light-50/80 hover:text-light-50 transition-colors text-sm break-all"
+              >
+                <EnvelopeIcon className="fill-light-50/80 w-4 h-4 flex-shrink-0" />
+                <span>support.undphumanitariansreliefassistance@usa.com</span>
+              </a>
+            </div>
+            <div className="flex flex-col gap-1 text-light-50/70 text-sm">
+              <a href="tel:8184359799" className="hover:text-light-50 transition-colors">
+                818 435-9799
+              </a>
+              <a href="tel:8634176101" className="hover:text-light-50 transition-colors">
+                863 417-6101
+              </a>
+              <a href="tel:8087076917" className="hover:text-light-50 transition-colors">
+                808 707-6917
+              </a>
+              <a href="tel:8082087067" className="hover:text-light-50 transition-colors">
+                808 208-7067
+              </a>
+            </div>
           </div>
         </div>
         {/*  */}
         <p className="text-light-50 text-center">
-          COPYRIGHT &copy; {new Date().getFullYear()}, UNDP GRANTS. ALL RIGHTS
+          COPYRIGHT &copy; {new Date().getFullYear()}, UNDP RELIEF ASSISTANCE. ALL RIGHTS
           RESERVED.
         </p>
       </div>
